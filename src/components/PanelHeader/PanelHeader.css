@@ -1,0 +1,7 @@
+.panel-header {
+  padding: 20px;
+  background: linear-gradient(87deg, #11cdef 0, #1171ef 100%);
+  color: white;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}

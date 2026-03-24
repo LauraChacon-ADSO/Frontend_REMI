@@ -1,0 +1,71 @@
+/* Fondo general */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(to right, #f0f4f8, #d9e2ec);
+  padding: 20px;
+}
+
+/* Tarjeta de login */
+.login-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 40px 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+/* Título */
+.login-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 12px;
+}
+
+/* Subtítulo */
+.login-welcome {
+  font-size: 15px;
+  color: #4a5568;
+  margin-bottom: 24px;
+}
+
+/* Inputs */
+.login-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  margin-bottom: 16px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #004AAD;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.3);
+}
+
+/* Botón */
+.login-button {
+  width: 100%;
+  height: 44px;
+  background-color: #004AAD;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #2b6cb0;
+}

@@ -1,0 +1,22 @@
+:root {
+  --navbar-height: 60px;   
+  --sidebar-width: 200px; 
+}
+
+.main-content {
+  margin-top: 70px;      
+  margin-left: 260px;    
+  padding: 20px;
+  min-height: 100vh;     
+  background: #f8f9fa;  
+
+}
+
+.contenedorPedido {
+   max-width: 600px;  
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+

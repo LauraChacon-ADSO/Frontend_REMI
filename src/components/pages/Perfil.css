@@ -1,0 +1,19 @@
+.perfil-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  background-color: #f8f9fa;
+}
+
+.perfil-card {
+  width: 22rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  border-radius: 8px;
+}
+
+.perfil-avatar {
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+}

@@ -1,0 +1,51 @@
+:root{
+  --navbar-height: 60px;   /* altura del navbar (ajusta si hace falta) */
+  --sidebar-width: 260px;  /* ancho del sidebar */
+}
+
+/* Top Navbar */
+.top-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--navbar-height);
+  z-index: 1100;
+  background: #646cff; /* tu color */
+  padding: 0.5rem 1rem;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: var(--navbar-height);   /* empieza debajo del navbar */
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-width);
+  z-index: 1050;
+  background: #1fb601;
+  overflow-y: auto;
+  transition: transform 0.25s ease;
+}
+
+/* Clase para ocultar el sidebar en móvil */
+.sidebar.hide {
+  transform: translateX(-100%);
+}
+
+/* Main (contenido) */
+
+
+/* Responsive: en pantallas pequeñas ocultamos sidebar por defecto */
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  .sidebar.show {
+    transform: translateX(0);
+  }
+  .main-content {
+    margin-left: 0;
+  }
+  .btn-sidebar-toggle { display: inline-block; }
+}
