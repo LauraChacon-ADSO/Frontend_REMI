@@ -11,7 +11,7 @@ const ListarUsuarios = () => {
     const fetchUsuarios = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("https://localhost:7052/api/Auth/usuarios", {
+        const response = await fetch("https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/Auth/usuarios", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ const ListarUsuarios = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `https://localhost:7052/api/Auth/usuarios/${documento}`,
+        `https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/Auth/usuarios/${documento}`,
         {
           method: "DELETE",
           headers: {

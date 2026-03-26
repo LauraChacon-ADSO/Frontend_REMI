@@ -1,36 +1,29 @@
-import axios from "axios";
-
-const API_URL = "https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/categorias"; 
-
+import api from "./api";
 
 export const getCategorias = async () => {
-  const response = await axios.get(API_URL);
+  const response = await api.get("/categorias");
   return response.data;
 };
-
 
 export const crearCategoria = async (categoria) => {
   const dto = {
-    nombreCategorias: categoria.nombreCategorias
+    nombreCategorias: categoria.nombreCategorias,
   };
 
-  const response = await axios.post(API_URL, dto);
+  const response = await api.post("/categorias", dto);
   return response.data;
 };
-
 
 export const updateCategoria = async (id, categoria) => {
   const dto = {
-    nombreCategorias: categoria.nombreCategorias
+    nombreCategorias: categoria.nombreCategorias,
   };
 
-  const response = await axios.put(`${API_URL}/${id}`, dto);
+  const response = await api.put(`/categorias/${id}`, dto);
   return response.data;
 };
-
 
 export const deleteCategoria = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+  const response = await api.delete(`/categorias/${id}`);
   return response.data;
 };
-

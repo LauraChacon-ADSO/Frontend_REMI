@@ -1,10 +1,7 @@
-import axios from "axios";
-
-const API_URL = "https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/proveedores";
-
+import api from "./api";
 
 export const getProveedores = async () => {
-  const response = await axios.get(API_URL);
+  const response = await api.get("/proveedores");
   return response.data;
 };
 
@@ -17,10 +14,9 @@ export const crearProveedor = async (proveedor) => {
     telefonoProveedor: proveedor.telefonoProveedor,
   };
 
-  const response = await axios.post(API_URL, dto);
+  const response = await api.post("/proveedores", dto);
   return response.data;
 };
-
 
 export const updateProveedor = async (id, proveedor) => {
   const dto = {
@@ -31,12 +27,11 @@ export const updateProveedor = async (id, proveedor) => {
     telefonoProveedor: proveedor.telefonoProveedor,
   };
 
-  const response = await axios.put(`${API_URL}/${id}`, dto);
+  const response = await api.put(`/proveedores/${id}`, dto);
   return response.data;
 };
 
-
 export const deleteProveedor = async (id) => {
-  const response = await axios.delete(`${API_URL}/${id}`);
+  const response = await api.delete(`/proveedores/${id}`);
   return response.data;
 };

@@ -1,14 +1,12 @@
-import axios from "axios";
-
-const API_URL = "https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/subCategorias";
+import api from "./api";
 
 export const getSubCategorias = async () => {
-  const res = await axios.get(API_URL);
+  const res = await api.get("/subCategorias");
   return res.data;
 };
 
 export const getSubCategoriasByCategoria = async (categoriaId) => {
-  const res = await axios.get(`${API_URL}/categoria/${categoriaId}`);
+  const res = await api.get(`/subCategorias/categoria/${categoriaId}`);
   return res.data;
 };
 
@@ -18,7 +16,7 @@ export const crearSubCategoria = async (subCategoria) => {
     codigoCategorias: subCategoria.codigoCategorias,
   };
 
-  const res = await axios.post(API_URL, dto);
+  const res = await api.post("/subCategorias", dto);
   return res.data;
 };
 
@@ -28,11 +26,11 @@ export const updateSubCategoria = async (id, subCategoria) => {
     codigoCategorias: subCategoria.codigoCategorias,
   };
 
-  const res = await axios.put(`${API_URL}/${id}`, dto);
+  const res = await api.put(`/subCategorias/${id}`, dto);
   return res.data;
 };
 
 export const deleteSubCategoria = async (id) => {
-  const res = await axios.delete(`${API_URL}/${id}`);
+  const res = await api.delete(`/subCategorias/${id}`);
   return res.data;
 };
