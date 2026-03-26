@@ -1,67 +1,59 @@
-const API_BASE_URL = 'https://localhost:7052/api/clientes';
+import api from "./api"; 
 
 const clienteService = {
+
     getClientes: async () => {
-        const response = await fetch(API_BASE_URL);
-        if (!response.ok) {
-            throw new Error('Error al obtener clientes');
-        }
-        return await response.json();
+        const response = await api.get("/clientes");
+        return response.data;
     },
 
     buscarCliente: async (filtro) => {
-        const response = await fetch(`${API_BASE_URL}?search=${filtro}`);
-        if (!response.ok) {
-            throw new Error('Error al buscar cliente');
+        try {
+            const response = await api.get(`/clientes?search=${filtro}`);
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 404) {
+                return [];
+            }
+            throw error;
         }
-        return await response.json();
     },
 
     actualizarCliente: async (id, cliente) => {
-        const response = await fetch(`${API_BASE_URL}/${id}`, {
-            method: "PUT",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cliente)
-        });
-
-        if (!response.ok) {
-            throw new Error('Error al actualizar cliente');
-        }
+        await api.put(`/clientes/${id}`, cliente);
     },
+
     crearCliente: async (cliente) => {
-        const response = await fetch(API_BASE_URL, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(cliente)
-        });
+        console.log("➡️ Enviando al backend:", cliente);
 
-        if (!response.ok) {
-            throw new Error('Error al crear cliente');
+        try {
+            const response = await api.post("/clientes", cliente);
+            return response.data;
+        } catch (error) {
+            console.error("❌ Error backend:", error.response?.data);
+            throw error;
         }
-
-        return await response.json();
     },
 
     eliminarCliente: async (id) => {
-        const response = await fetch(`${API_BASE_URL}/${id}`, {
-            method: "DELETE"
-        });
-        if (!response.ok) {
-            throw new Error('Error al eliminar cliente');
+        try {
+            await api.delete(`/clientes/${id}`);
+            return true;
+        } catch (error) {
+            throw new Error("Error al eliminar cliente");
         }
     },
 
-    // 🔍 NUEVO MÉTODO
     getClientePorId: async (id) => {
-        const response = await fetch(`${API_BASE_URL}/${id}`);
-        if (!response.ok) {
-            throw new Error('Error al obtener cliente por ID');
+        try {
+            const response = await api.get(`/clientes/${id}`);
+            return response.data;
+        } catch (error) {
+            if (error.response?.status === 404) {
+                return null;
+            }
+            throw error;
         }
-        return await response.json();
     }
 };
 

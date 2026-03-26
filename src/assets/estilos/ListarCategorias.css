@@ -1,0 +1,121 @@
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: white !important;
+}
+
+
+.contenedor-tabla {
+  background-color: #ffffff;
+  padding: 25px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 1200px;
+  box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.08);
+  margin: 40px auto;
+}
+
+
+.titulo-tabla {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  color: #198754; 
+  text-align: center;
+}
+
+.subtitulo-tabla {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+
+.dx-datagrid-headers .dx-datagrid-text-content {
+  color: #212529;
+  font-weight: 600;
+  font-size: 15px;
+  text-align: center;
+}
+
+
+.dx-datagrid {
+  color: #212529;
+  font-size: 14px;
+  font-weight: 500;  
+}
+
+.dx-datagrid .dx-toolbar .dx-button {
+  background-color: #099615 !important;
+  border: 1px solid #ced4da !important;
+  border-radius: 6px !important;
+  box-shadow: 0px 2px 4px rgba(0,0,0,0.08);
+}
+
+.dx-datagrid .dx-toolbar .dx-button:hover {
+  background-color: #f8f9fa !important;
+}
+
+
+.dx-datagrid .dx-link-edit {
+  background-color: #ffc107;
+  color: #ffffff !important;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dx-datagrid .dx-link-edit .dx-icon {
+  color: #ffffff !important;
+}
+
+.dx-datagrid .dx-link-edit:hover {
+  background-color: #e0a800;
+}
+
+
+.dx-datagrid .dx-link-delete {
+  background-color: #dc3545;
+  color: #ffffff !important;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dx-datagrid .dx-link-delete .dx-icon {
+  color: #ffffff !important;
+}
+
+.dx-datagrid .dx-link-delete:hover {
+  background-color: #bb2d3b;
+}
+
+
+.dx-datagrid-edit-button {
+  background-color: #ffc107 !important;
+  color: #ffffff !important;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.dx-datagrid-edit-button:hover {
+  background-color: #e0a800 !important;
+}
+
+
+.dx-datagrid-delete-button {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.dx-datagrid-delete-button:hover {
+  background-color: #bb2d3b !important;
+}

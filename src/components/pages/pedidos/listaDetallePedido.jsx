@@ -127,7 +127,7 @@ export default function ListaDetallePedido() {
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Nombre</th>
-                    <th>Precio Unitario</th>
+                    <th>Precio Docena</th>
                     <th>Total</th>
                   </tr>
                 </thead>

@@ -43,7 +43,7 @@ const EditarCliente = () => {
     e.preventDefault();
     try {
       await clienteService.actualizarCliente(documentoCliente, cliente);
-      navigate("/clientes/lista");
+      navigate("/admin/clientes-lista");
     } catch (err) {
       if (err.response && err.response.data) {
         alert(err.response.data);
@@ -70,26 +70,20 @@ const EditarCliente = () => {
                 <Row className="mb-3">
                   <Col md={6}>
                     <Form.Group>
-                      <Form.Label>Documento</Form.Label>
-                      <Form.Control
-                        type="text"
-                        name="documentoCliente"
-                        value={cliente.documentoCliente}
-                        onChange={handleChange}
-                        disabled
-                      />
-                    </Form.Group>
-                  </Col>
-                  <Col md={6}>
-                    <Form.Group>
                       <Form.Label>Tipo Documento</Form.Label>
-                      <Form.Control
-                        type="text"
+                      <Form.Select
                         name="tipoDocumentoCliente"
                         value={cliente.tipoDocumentoCliente}
                         onChange={handleChange}
                         required
-                      />
+                      >
+                        <option value="">Seleccione...</option>
+                        <option value="CC">Cédula de Ciudadanía</option>
+                        <option value="TI">Tarjeta de Identidad</option>
+                        <option value="CE">Cédula de Extranjería</option>
+                        <option value="NIT">NIT</option>
+                        <option value="PAS">Pasaporte</option>
+                      </Form.Select>
                     </Form.Group>
                   </Col>
                 </Row>
@@ -148,12 +142,13 @@ const EditarCliente = () => {
                 </Row>
 
                 <div className="d-flex justify-content-end gap-2 mt-4">
-                  <Button type="submit" variant="primary">
+                  <Button type="submit" variant="primary"
+                  onClick={() => navigate("/clientes-lista")}>
                     💾 Guardar Cambios
                   </Button>
                   <Button
                     variant="secondary"
-                    onClick={() => navigate("/clientes/lista")}
+                    onClick={() => navigate("/admin/clientes-lista")}
                   >
                     ❌ Cancelar
                   </Button>

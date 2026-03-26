@@ -1,5 +1,6 @@
 import './Sidebar.css'; 
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaHome,
   FaUser,
@@ -10,6 +11,7 @@ import {
   FaTruck,
   FaCreditCard,
   FaChevronDown,
+  FaFolderOpen,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -89,7 +91,7 @@ export default function Sidebar() {
           )}
         </li>
 
-        {/* Productos */}
+        {/* PRODUCTOS */}
         <li className="nav-item">
           <div
             className="nav-link text-white d-flex justify-content-between align-items-center"
@@ -101,22 +103,27 @@ export default function Sidebar() {
             </span>
             <FaChevronDown
               style={{
-                transform: open === "productos" ? "rotate(180deg)" : "rotate(0)",
+                transform:
+                  open === "productos" ? "rotate(180deg)" : "rotate(0)",
                 transition: "0.3s",
               }}
             />
           </div>
+
           {open === "productos" && (
             <ul className="nav flex-column ms-4 mt-2">
               <li>
-                <a href="#" className="nav-link text-white">
+                <Link to="/admin/productos" className="nav-link text-white">
                   Productos
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="nav-link text-white">
+                <Link
+                  to="/admin/productos/agregar"
+                  className="nav-link text-white"
+                >
                   Agregar Producto
-                </a>
+                </Link>
               </li>
             </ul>
           )}
@@ -157,13 +164,6 @@ export default function Sidebar() {
 
         
         <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            <FaReceipt className="me-2" /> Recibo
-          </a>
-        </li>
-
-        
-        <li className="nav-item">
           <div
             className="nav-link text-white d-flex justify-content-between align-items-center"
             style={{ cursor: "pointer" }}
@@ -196,6 +196,7 @@ export default function Sidebar() {
         </li>
 
         
+        {/* PROVEEDORES */}
         <li className="nav-item">
           <div
             className="nav-link text-white d-flex justify-content-between align-items-center"
@@ -207,26 +208,52 @@ export default function Sidebar() {
             </span>
             <FaChevronDown
               style={{
-                transform: open === "proveedores" ? "rotate(180deg)" : "rotate(0)",
+                transform:
+                  open === "proveedores" ? "rotate(180deg)" : "rotate(0)",
                 transition: "0.3s",
               }}
             />
           </div>
+
           {open === "proveedores" && (
             <ul className="nav flex-column ms-4 mt-2">
+             
               <li>
-                <a href="#" className="nav-link text-white">
-                  Agregar Proveedor
-                </a>
-              </li>
-              <li>
-                <a href="#" className="nav-link text-white">
-                  Proveedores
-                </a>
+                 <Link to="/admin/proveedores" className="nav-link text-white">
+            Ver proveedores
+        </Link>
               </li>
             </ul>
           )}
         </li>
+
+        {/* CATEGORÍAS */}
+      <li className="nav-item">
+        <div
+          className="nav-link text-white d-flex justify-content-between align-items-center"
+          style={{ cursor: "pointer" }}
+          onClick={() => toggleMenu("categorias")}
+        >
+          <span>
+            <FaFolderOpen className="me-2" /> Categorías
+          </span>
+          <FaChevronDown
+            style={{
+              transform: open === "categorias" ? "rotate(180deg)" : "rotate(0)",
+              transition: "0.3s",
+            }}
+          />
+        </div>
+        {open === "categorias" && (
+          <ul className="nav flex-column ms-4 mt-2">
+            <li>
+              <Link to="/admin/categorias" className="nav-link text-white">
+                Ver Categorías
+              </Link>
+            </li>
+          </ul>
+        )}
+      </li>
         <li className="nav-item">
           <div
             className="nav-link text-white d-flex justify-content-between align-items-center"

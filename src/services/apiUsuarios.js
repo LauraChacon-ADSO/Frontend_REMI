@@ -1,7 +1,7 @@
-const API_BASE_URL = 'https://localhost:7052/api/Auth/usuarios';
+const API_BASE_URL = 'https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/Auth/usuarios';
 
 const usuarioService = {
-  // Listar todos
+  
   getUsuarios: async () => {
     const response = await fetch(API_BASE_URL);
     if (!response.ok) throw new Error('Error al obtener usuarios');

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://localhost:7052/api/formaPagos";
+const API_BASE_URL = "https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/formaPagos";
 
 const metodoService = {
   getMetodos: async () => {

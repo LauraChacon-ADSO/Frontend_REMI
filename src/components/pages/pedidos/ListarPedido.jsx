@@ -10,7 +10,8 @@ import {
   Form,
   Modal,
 } from "react-bootstrap";
-import pedidoService from "/src/services/pedidoService"; // tu servicio
+import { eliminarPedido, editarPedido } from "/src/services/apiPedido";
+import pedidoService from "/src/services/pedidoService"; 
 
 const ListarPedidoConModal = () => {
   const [pedidos, setPedidos] = useState([]);
@@ -19,12 +20,10 @@ const ListarPedidoConModal = () => {
   const [error, setError] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
   const [pedidosPorPagina] = useState(10);
-
-  // 🔹 Modal factura
+  const [pedidosOriginales, setPedidosOriginales] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // 🔹 Modal pago
   const [showPagoModal, setShowPagoModal] = useState(false);
   const [metodoPago, setMetodoPago] = useState("");
   const [valorPago, setValorPago] = useState("");
@@ -35,12 +34,12 @@ const ListarPedidoConModal = () => {
     cargarPedidos();
   }, []);
 
-  // 🔹 Cargar todos los pedidos
   const cargarPedidos = async () => {
     try {
       setLoading(true);
       const data = await pedidoService.getPedidos();
       setPedidos(data);
+      setPedidosOriginales(data);
       setError(null);
     } catch (error) {
       setError("Error al cargar los pedidos");
@@ -49,55 +48,102 @@ const ListarPedidoConModal = () => {
     }
   };
 
-  // 🔹 Buscar un pedido por ID
-  const buscarPedidoPorId = async () => {
-    if (!idBusqueda) return;
+    useEffect(() => {
+      if (idBusqueda.trim() === "") {
+        setPedidos(pedidosOriginales);
+        return;
+      }
 
-    try {
-      setLoading(true);
-      const pedido = await pedidoService.getPedidoPorId(idBusqueda);
-      setPedidos(pedido ? [pedido] : []);
-      setPaginaActual(1);
-      setError(null);
-    } catch (error) {
-      setError("Pedido no encontrado o error al buscar");
-      setPedidos([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      const timeout = setTimeout(async () => {
+        try {
+          let resultados = [];
 
-  // 🔹 Abrir modal con factura
+          if (!isNaN(idBusqueda)) {
+            const pedido = await pedidoService.getPedidoPorId(idBusqueda);
+            resultados = pedido ? [pedido] : [];
+          } else {
+            const filtro = idBusqueda.toLowerCase();
+
+            resultados = pedidosOriginales.filter(p => {
+              const nombre = p.nombreCliente?.toLowerCase() || "";
+              const apellido = p.apellidoCliente?.toLowerCase() || "";
+              const nombreCompleto = `${nombre} ${apellido}`;
+
+              return (
+                nombre.includes(filtro) ||
+                apellido.includes(filtro) ||
+                nombreCompleto.includes(filtro)
+              );
+            });
+          }
+
+          setPedidos(resultados);
+          setPaginaActual(1);
+          setError(null);
+        } catch {
+          setPedidos([]);
+        }
+      }, 400);
+
+      return () => clearTimeout(timeout);
+    }, [idBusqueda, pedidosOriginales]);
+
   const handleVer = (pedido) => {
     setPedidoSeleccionado(pedido);
     setShowModal(true);
   };
 
-  // 🔹 Marcar pedido como completado
-  const handleMarcarCompletado = async () => {
-    if (!pedidoSeleccionado) return;
+  const handleEliminarPedido = async (codigoPedido) => {
+    if (!window.confirm("¿Seguro que deseas eliminar este pedido?")) return;
+
     try {
-      // Aquí deberías llamar a tu API para actualizar el estado
-      // await pedidoService.actualizarPedido(pedidoSeleccionado.codigoPedido, { ...pedidoSeleccionado, estadoPedido: "Completado" });
-
-      setPedidoSeleccionado({
-        ...pedidoSeleccionado,
-        estadoPedido: "Completado",
-      });
-
-      alert("✅ Pedido marcado como Completado");
+      await eliminarPedido(codigoPedido);
+      setPedidos((prev) =>
+        prev.filter((p) => p.codigoPedido !== codigoPedido)
+      );
+      alert("✅ Pedido eliminado correctamente");
     } catch (error) {
-      console.error(error);
-      alert("❌ Error al actualizar pedido");
+      alert("❌ Error al eliminar el pedido");
     }
   };
 
-  // 🔹 Abrir modal de pago
+  const handleMarcarCompletado = async () => {
+    if (!pedidoSeleccionado) return;
+
+    try {
+      const pedidoActualizado = {
+        ...pedidoSeleccionado,
+        estadoPedido: "Completado",
+      };
+
+      await editarPedido(
+        pedidoSeleccionado.codigoPedido,
+        pedidoActualizado
+      );
+
+      setPedidos((prev) =>
+        prev.map((p) =>
+          p.codigoPedido === pedidoSeleccionado.codigoPedido
+            ? pedidoActualizado
+            : p
+        )
+      );
+
+      setPedidoSeleccionado(pedidoActualizado);
+
+      alert("✅ Pedido marcado como Completado");
+    } catch (error) {
+      alert("❌ Error al actualizar el estado");
+    }
+  };
+
+
+
   const handleAbrirPago = () => {
     setShowPagoModal(true);
   };
 
-  // 🔹 Registrar pago
+
   const handleRegistrarPago = async () => {
     if (!metodoPago || !valorPago) {
       alert("⚠️ Debes seleccionar un método y un valor.");
@@ -105,7 +151,6 @@ const ListarPedidoConModal = () => {
     }
 
     try {
-      // Aquí deberías llamar al API de pagos/recibos
       // await pagoService.registrarPago(pedidoSeleccionado.codigoPedido, { metodoPago, valorPago });
 
       console.log("Pago registrado:", {
@@ -125,7 +170,7 @@ const ListarPedidoConModal = () => {
     }
   };
 
-  // 🔹 Paginación
+
   const pedidosPaginados = pedidos.slice(
     (paginaActual - 1) * pedidosPorPagina,
     paginaActual * pedidosPorPagina
@@ -137,14 +182,13 @@ const ListarPedidoConModal = () => {
     }
   };
 
-  // 🔹 Formatear fecha y hora
   const formatearFecha = (fecha) =>
     fecha ? new Date(fecha).toLocaleDateString("es-CO") : "---";
 
   const formatearHora = (hora) =>
-    hora ? hora.substring(0, 5) : "---"; // HH:mm
+    hora ? hora.substring(0, 5) : "---"; 
 
-  // 🔹 Loading / Error
+
   if (loading) return <Spinner animation="border" variant="primary" />;
   if (error) return <Alert variant="danger">{error}</Alert>;
 
@@ -166,22 +210,10 @@ const ListarPedidoConModal = () => {
           <Col md={8}>
             <Form.Control
               type="text"
-              placeholder="🔎 Buscar pedido por código"
+              placeholder="Buscar pedido por ID o nombre del cliente"
               value={idBusqueda}
               onChange={(e) => setIdBusqueda(e.target.value)}
             />
-          </Col>
-          <Col>
-            <Button variant="primary" onClick={buscarPedidoPorId}>
-              Buscar
-            </Button>
-            <Button
-              variant="secondary"
-              className="ms-2"
-              onClick={cargarPedidos}
-            >
-              Reset
-            </Button>
           </Col>
         </Row>
       </Form>
@@ -190,7 +222,6 @@ const ListarPedidoConModal = () => {
       <Table bordered hover responsive className="shadow-sm">
         <thead className="table-primary text-center">
           <tr>
-            <th>#</th>
             <th>Código Pedido</th>
             <th>Cliente</th>
             <th>Fecha</th>
@@ -204,9 +235,8 @@ const ListarPedidoConModal = () => {
           {pedidosPaginados.length > 0 ? (
             pedidosPaginados.map((pedido, index) => (
               <tr key={pedido.codigoPedido}>
-                <td>{(paginaActual - 1) * pedidosPorPagina + index + 1}</td>
                 <td className="fw-bold">{pedido.codigoPedido}</td>
-                <td>{pedido.nombreCliente}</td>
+                <td>{pedido.nombreCliente + " " + pedido.apellidoCliente}</td>
                 <td>{formatearFecha(pedido.fechaPedido)}</td>
                 <td>{formatearHora(pedido.horaPedido)}</td>
                 <td>
@@ -241,9 +271,7 @@ const ListarPedidoConModal = () => {
                   <Button
                     variant="danger"
                     size="sm"
-                    onClick={() =>
-                      alert(`Eliminar pedido ${pedido.codigoPedido}`)
-                    }
+                    onClick={() => handleEliminarPedido(pedido.codigoPedido)}
                   >
                     🗑 Eliminar
                   </Button>
@@ -328,7 +356,7 @@ const ListarPedidoConModal = () => {
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Nombre</th>
-                    <th>Precio Unitario</th>
+                    <th>Precio Docena</th>
                     <th>Total</th>
                   </tr>
                 </thead>
@@ -418,5 +446,3 @@ const ListarPedidoConModal = () => {
 };
 
 export default ListarPedidoConModal;
-
-

@@ -19,6 +19,10 @@ import Login from "./components/pages/Login.jsx";
 import Perfil from "./components/pages/Perfil.jsx";
 import ReportesProductos from './components/pages/reportes/ReportesProductos.jsx';
 import ReportesVentas from './components/pages/reportes/ReportesVentas.jsx';
+import ListarProductos from "./components/productos/ListarProductos.jsx";
+import ListarCategorias from "./components/categoria/ListarCategoria.jsx";
+import ListarSubCategorias from "./components/subcategoria/ListarSubCategorias.jsx";
+import ListarProveedores from "./components/proveedores/Listarproveedores.jsx";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import routes from "./routes";
 
@@ -68,6 +72,18 @@ function App() {
           <Route path="metodos-lista" element={<ListarMetodosPago />} />
           <Route path="metodos-agregar" element={<AgregarMetodoPago />} />
 
+          <Route path="productos" element={<ListarProductos />} />
+
+       
+          <Route path="categorias" element={<ListarCategorias />} />
+          <Route
+            path="subcategorias/:categoriaId"
+            element={<ListarSubCategorias />}
+          />
+
+        
+          <Route path="proveedores" element={<ListarProveedores />} />
+
           <Route path="usuarios-lista" element={<ListarUsuarios />} />
           <Route path="usuarios-editar/:documento" element={<EditarUsuario />} />
           <Route path="usuarios-agregar" element={<AgregarUsuario />} />
@@ -102,7 +118,7 @@ function App() {
           <Route path="perfil" element={<Perfil />} />
         </Route>
 
-        
+        <Route path="/" element={<Navigate to="/admin/productos" replace />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>

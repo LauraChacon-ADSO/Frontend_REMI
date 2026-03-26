@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import clienteService from "/src/services/apiCliente.js";
+
+import clienteService from '/src/services/apiCliente.js';
+
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
 
 const AgregarCliente = () => {
@@ -15,7 +17,6 @@ const AgregarCliente = () => {
     telefonoCliente: "",
   });
 
-  // Manejar cambios en inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setCliente((prev) => ({
@@ -24,18 +25,23 @@ const AgregarCliente = () => {
     }));
   };
 
-  // Enviar cliente a la API
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Payload con PascalCase como espera el backend
+    let telefonoFormateado = null;
+
+    if (cliente.telefonoCliente) {
+      telefonoFormateado = `(+57) ${cliente.telefonoCliente}`;
+    }
+
     const payload = {
-      DocumentoCliente: cliente.documentoCliente.toString(),
-      TipoDocumentoCliente: cliente.tipoDocumentoCliente,
-      NombreCliente: cliente.nombreCliente,
-      ApellidoCliente: cliente.apellidoCliente,
-      CorreoCliente: cliente.correoCliente,
-      TelefonoCliente: cliente.telefonoCliente ? cliente.telefonoCliente.toString() : null,
+      documentoCliente: String(cliente.documentoCliente),
+      tipoDocumentoCliente: cliente.tipoDocumentoCliente,
+      nombreCliente: cliente.nombreCliente,
+      apellidoCliente: cliente.apellidoCliente,
+      correoCliente: cliente.correoCliente,
+      telefonoCliente: telefonoFormateado,
+      estadoCliente: true,
     };
 
     console.log("📦 Payload enviado:", payload);
@@ -43,12 +49,13 @@ const AgregarCliente = () => {
     try {
       await clienteService.crearCliente(payload);
       alert("✅ Cliente creado exitosamente");
-      navigate("/admin/clientes-lista"); // Redirige a la lista tras crear
+      navigate("/admin/clientes-lista");
     } catch (error) {
       console.error("❌ Error creando cliente:", error);
-      alert("❌ Error al crear cliente: " + error.message);
+      alert("❌ " + error.message);
     }
   };
+
 
   return (
     <Row className="justify-content-center mt-5">
@@ -63,7 +70,7 @@ const AgregarCliente = () => {
               <Form.Group className="mb-3">
                 <Form.Label>Documento</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="text" // 👈 NO number
                   name="documentoCliente"
                   value={cliente.documentoCliente}
                   onChange={handleChange}
@@ -127,14 +134,13 @@ const AgregarCliente = () => {
                   value={cliente.correoCliente}
                   onChange={handleChange}
                   placeholder="ejemplo@correo.com"
-                  required
                 />
               </Form.Group>
 
               <Form.Group className="mb-4">
                 <Form.Label>Teléfono</Form.Label>
                 <Form.Control
-                  type="text"
+                  type="text" // 👈 NO number
                   name="telefonoCliente"
                   value={cliente.telefonoCliente}
                   onChange={handleChange}
@@ -142,7 +148,7 @@ const AgregarCliente = () => {
                 />
               </Form.Group>
 
-              <div className="d-flex justify-content-between">
+              <div className="d-flex justify-content-end">
                 <Button type="submit" variant="primary">
                   💾 Guardar Cliente
                 </Button>

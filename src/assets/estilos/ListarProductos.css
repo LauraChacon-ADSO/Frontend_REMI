@@ -1,0 +1,85 @@
+
+.contenedor-tabla {
+  background:#fff;
+  padding: 30px;
+  border-radius: 14px;
+  width: 95%;
+  max-width: 1600px;
+  margin: 90px auto 60px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-height:300px;
+  transform: translateX(-25px);
+}
+
+
+.titulo-tabla {
+  font-size: 28px;
+  font-weight: 700;
+  color: #198754; 
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.Subtitulo {
+  text-align: center;
+  color: #6c757d;
+  margin-bottom: 25px;
+}
+
+
+.dx-datagrid {
+  color: #000000;
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+.contenedor-tabla .dx-datagrid {
+  width: 100% !important;
+}
+
+.dx-datagrid-headers .dx-datagrid-text-content {
+  color: #000000;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+}
+
+.acciones-botones {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.dx-command-edit .dx-link-edit {
+  background: #ffc107 !important;
+  border: 2px solid #e0a800 !important;
+  color: #000 !important;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 8px;
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+.dx-command-edit .dx-link-edit:hover {
+  background: #ffca2c !important;
+}
+
+
+.dx-command-edit .dx-link-delete {
+  background: #dc3545 !important;
+  border: 2px solid #b02a37 !important;
+  color: #fff !important;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 8px;
+  text-decoration: none !important;
+  display: inline-block;
+}
+
+.dx-command-edit .dx-link-delete:hover {
+  background: #bb2d3b !important;
+}

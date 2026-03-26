@@ -15,6 +15,8 @@
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
     "chart.js": "^4.5.0",
+    "devextreme": "^25.2.5",
+    "devextreme-react": "^25.2.5",
     "expo": "^54.0.20",
     "jwt-decode": "^4.0.0",
     "perfect-scrollbar": "^1.5.6",

@@ -1,87 +1,42 @@
-const API_PEDIDOS_URL = "https://localhost:7052/api/PedidosInfo";
+import api from "./api";
 
 const pedidoService = {
-    // 🔹 Obtener todos los pedidos
     getPedidos: async () => {
-        const response = await fetch(API_PEDIDOS_URL);
-        if (!response.ok) {
-            throw new Error("Error al obtener pedidos");
-        }
-        return await response.json();
+        const response = await api.get("/PedidosInfo");
+        return response.data;
     },
 
-    // 🔹 Buscar pedido por filtro (ej: código o cliente)
     buscarPedido: async (filtro) => {
-        const response = await fetch(`${API_PEDIDOS_URL}?search=${filtro}`);
-        if (!response.ok) {
-            throw new Error("Error al buscar pedido");
-        }
-        return await response.json();
+        const response = await api.get(`/PedidosInfo?search=${filtro}`);
+        return response.data;
     },
 
-    // 🔹 Obtener pedido por ID
     getPedidoPorId: async (id) => {
-        const response = await fetch(`${API_PEDIDOS_URL}/${id}`);
-        if (!response.ok) {
-            throw new Error("Error al obtener pedido por ID");
-        }
-        return await response.json();
+        const response = await api.get(`/PedidosInfo/${id}`);
+        return response.data;
     },
 
-    // 🔹 Actualizar pedido
     actualizarPedido: async (id, pedido) => {
-        const response = await fetch(`${API_PEDIDOS_URL}/${id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(pedido)
-        });
-
-        if (!response.ok) {
-            throw new Error("Error al actualizar pedido");
-        }
+        await api.put(`/PedidosInfo/${id}`, pedido);
     },
 
-    // 🔹 Eliminar pedido
     eliminarPedido: async (id) => {
-        const response = await fetch(`${API_PEDIDOS_URL}/${id}`, {
-            method: "DELETE"
-        });
-        if (!response.ok) {
-            throw new Error("Error al eliminar pedido");
-        }
+        await api.delete(`/PedidosInfo/${id}`);
     },
-    // 🔹 Completar pedido con método de pago
+
     completarPedido: async (id, metodoPago) => {
-        const response = await fetch(`${API_PEDIDOS_URL}/${id}/completar`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ metodoPago })
+        const response = await api.put(`/PedidosInfo/${id}/completar`, {
+            metodoPago
         });
-
-        if (!response.ok) {
-            throw new Error("Error al completar pedido");
-        }
-
-        return await response.json();
+        return response.data;
     },
+
     actualizarEstado: async (id, nuevoEstado) => {
-    const response = await fetch(`${API_PEDIDOS_URL}/${id}/estado`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ estadoPedido: nuevoEstado })
-    });
-
-    if (!response.ok) {
-      throw new Error("Error al actualizar estado del pedido");
-    }
-
-    return await response.json();
-  },
-    
+        const response = await api.put(`/PedidosInfo/${id}/estado`, {
+            estadoPedido: nuevoEstado
+        });
+        return response.data;
+    },
 };
 
 export default pedidoService;
