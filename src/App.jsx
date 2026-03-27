@@ -23,6 +23,7 @@ import ListarProductos from "./components/productos/ListarProductos.jsx";
 import ListarCategorias from "./components/categoria/ListarCategoria.jsx";
 import ListarSubCategorias from "./components/subcategoria/ListarSubCategorias.jsx";
 import ListarProveedores from "./components/proveedores/Listarproveedores.jsx";
+import EditarPedido from './components/pages/pedidos/EditarPedido.jsx';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import routes from "./routes";
 
@@ -64,6 +65,7 @@ function App() {
           <Route path="crear-pedido" element={<CrearPedido />} />
           <Route path="listar-pedido" element={<ListarPedido />} />
           <Route path="detalle-pedido/:codigoPedido" element={<ListaDetallePedido />} />
+          <Route path="editar-pedido/:codigoPedido" element={<EditarPedido />} />
 
           <Route path="clientes-lista" element={<ListarCliente />} />
           <Route path="clientes-editar/:documentoCliente" element={<EditarCliente />} />

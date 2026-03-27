@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import {
-  buscarCliente,
-  crearPedido,
   listarClientes,
   buscarProductoPorNombre,
-} from "/src/services/apiPedido.js";
+  editarPedido,
+} from "/src/services/apiPedido";
+import pedidoService from "/src/services/pedidoService";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-function CrearPedido() {
-  const [documentoCliente, setDocumentoCliente] = useState("");
+function EditarPedido() {
+  const { codigoPedido: id } = useParams();
+  const navigate = useNavigate();
+
   const [cliente, setCliente] = useState(null);
+  const [documentoCliente, setDocumentoCliente] = useState("");
 
   const [codigoPedido, setCodigoPedido] = useState("");
   const [fechaPedido, setFechaPedido] = useState("");
@@ -17,8 +21,8 @@ function CrearPedido() {
   const [estadoPedido, setEstadoPedido] = useState("Pendiente");
 
   const [clientes, setClientes] = useState([]);
-  const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [busquedaNombre, setBusquedaNombre] = useState("");
+  const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [mostrarLista, setMostrarLista] = useState(false);
 
   const [productos, setProductos] = useState([]);
@@ -41,12 +45,36 @@ function CrearPedido() {
   );
 
   useEffect(() => {
-    const cargarClientes = async () => {
-      const data = await listarClientes();
-      setClientes(data || []);
-    };
+    cargarPedido();
     cargarClientes();
   }, []);
+
+  const cargarPedido = async () => {
+    const data = await pedidoService.getPedidoPorId(id);
+
+    setCodigoPedido(data.codigoPedido);
+    setFechaPedido(data.fechaPedido?.split("T")[0]);
+    setHoraPedido(data.horaPedido?.substring(0, 5));
+    setEstadoPedido(data.estadoPedido);
+    setDocumentoCliente(data.documentoCliente);
+
+    setCliente(data);
+
+    const productosMap = data.detallesP.map((p) => ({
+      codigoProducto: p.codigoProducto,
+      nombreProducto: p.nombreProducto,
+      cantidadProducto: p.cantidadProducto,
+      precioUnitario: p.valorProducto,
+      totalPagoProducto: p.totalPagoProducto,
+    }));
+
+    setProductos(productosMap);
+  };
+
+  const cargarClientes = async () => {
+    const data = await listarClientes();
+    setClientes(data || []);
+  };
 
   useEffect(() => {
     if (busquedaNombre.trim() === "") {
@@ -61,10 +89,7 @@ function CrearPedido() {
       const nombreCompleto =
         `${c.nombreCliente} ${c.apellidoCliente}`.toLowerCase();
 
-      return (
-        nombreCompleto.includes(filtro) ||
-        String(c.documentoCliente).includes(filtro)
-      );
+      return nombreCompleto.includes(filtro);
     });
 
     setClientesFiltrados(resultados);
@@ -92,12 +117,12 @@ function CrearPedido() {
     const totalBase =
       producto.precioUnitario * producto.cantidadProducto;
 
-    const nuevoProducto = {
+    const nuevo = {
       ...producto,
       totalPagoProducto: redondearA50(totalBase),
     };
 
-    setProductos([...productos, nuevoProducto]);
+    setProductos([...productos, nuevo]);
 
     setProducto({
       codigoProducto: "",
@@ -115,61 +140,45 @@ function CrearPedido() {
     setProductos(productos.filter((_, i) => i !== index));
   };
 
-  const handleEditarCantidad = (index, nuevaCantidad) => {
+  const handleEditarCantidad = (index, cantidad) => {
     const nuevos = [...productos];
 
-    nuevos[index].cantidadProducto = nuevaCantidad;
+    nuevos[index].cantidadProducto = cantidad;
 
     const totalBase =
-      nuevos[index].precioUnitario * nuevaCantidad;
+      nuevos[index].precioUnitario * cantidad;
 
     nuevos[index].totalPagoProducto = redondearA50(totalBase);
 
     setProductos(nuevos);
   };
 
-  const handleGuardarPedido = async () => {
-    if (!documentoCliente || productos.length === 0) return;
-
+  const handleGuardar = async () => {
     const pedido = {
-      codigoPedido,
       fechaPedido,
       horaPedido,
       documentoCliente,
       estadoPedido,
       valorPedido,
-      detallesP: productos.map((p) => ({
-        codigoProducto: p.codigoProducto,
-        cantidadProducto: p.cantidadProducto,
-        valorProducto: p.precioUnitario,
-        totalPagoProducto: p.totalPagoProducto,
-      })),
+      detallesP: productos,
     };
 
-    const result = await crearPedido(pedido);
+    await editarPedido(id, pedido);
 
-    alert("Pedido creado: " + result.codigoPedido);
-
-    setProductos([]);
-    setCliente(null);
-    setDocumentoCliente("");
-    setBusquedaNombre("");
+    alert("✅ Pedido actualizado");
+    navigate("/admin/listar-pedido");
   };
 
   return (
     <div className="container mt-4">
-      <h2>Crear Pedido</h2>
+      <h2>Editar Pedido</h2>
 
       <div className="card p-3 mb-3 position-relative">
         <input
           className="form-control"
           placeholder="Buscar cliente..."
           value={busquedaNombre}
-          onChange={(e) => {
-            setBusquedaNombre(e.target.value);
-            setCliente(null);
-            setProductos([]);
-          }}
+          onChange={(e) => setBusquedaNombre(e.target.value)}
         />
 
         {mostrarLista && clientesFiltrados.length > 0 && (
@@ -178,17 +187,10 @@ function CrearPedido() {
               <button
                 key={c.documentoCliente}
                 className="list-group-item list-group-item-action"
-                onClick={async () => {
-                  setBusquedaNombre(`${c.nombreCliente} ${c.apellidoCliente}`);
+                onClick={() => {
                   setDocumentoCliente(c.documentoCliente);
+                  setCliente(c);
                   setMostrarLista(false);
-
-                  const data = await buscarCliente(c.documentoCliente);
-                  setCliente(data);
-
-                  const ahora = new Date();
-                  setFechaPedido(ahora.toISOString().split("T")[0]);
-                  setHoraPedido(ahora.toLocaleTimeString());
                 }}
               >
                 {c.nombreCliente} {c.apellidoCliente}
@@ -202,8 +204,6 @@ function CrearPedido() {
             <h5>Datos del Cliente</h5>
             <p><strong>Documento:</strong> {cliente.documentoCliente}</p>
             <p><strong>Nombre:</strong> {cliente.nombreCliente}</p>
-            <p><strong>Email:</strong> {cliente.correoCliente}</p>
-            <p><strong>Teléfono:</strong> {cliente.telefonoCliente}</p>
           </div>
         )}
       </div>
@@ -211,21 +211,18 @@ function CrearPedido() {
       {cliente && (
         <>
           <div className="card p-3 mb-3">
-            <input
-              className="form-control mb-2"
-              placeholder="Código Pedido"
-              value={codigoPedido}
-              onChange={(e) => setCodigoPedido(e.target.value)}
-            />
+            <input className="form-control mb-2" value={codigoPedido} readOnly />
             <input className="form-control mb-2" value={fechaPedido} readOnly />
+
             <select
-            className="form-select mb-2"
-            value={estadoPedido}
-            onChange={(e) => setEstadoPedido(e.target.value)}
-          >
-            <option>Pendiente</option>
-            <option>Completado</option>
-          </select>
+              className="form-select mb-2"
+              value={estadoPedido}
+              onChange={(e) => setEstadoPedido(e.target.value)}
+            >
+              <option>Pendiente</option>
+              <option>Completado</option>
+            </select>
+
             <input className="form-control mb-2" value={horaPedido} readOnly />
             <input className="form-control" value={valorPedido} readOnly />
           </div>
@@ -328,13 +325,22 @@ function CrearPedido() {
             </tbody>
           </table>
 
-          <button className="btn btn-primary" onClick={handleGuardarPedido}>
-            Guardar Pedido
-          </button>
+          <div className="d-flex gap-2">
+            <button className="btn btn-primary" onClick={handleGuardar}>
+              Guardar Cambios
+            </button>
+
+            <button
+              className="btn btn-secondary"
+              onClick={() => navigate("/admin/listar-pedido")}
+            >
+              Cancelar
+            </button>
+          </div>
         </>
       )}
     </div>
   );
 }
 
-export default CrearPedido;
+export default EditarPedido;

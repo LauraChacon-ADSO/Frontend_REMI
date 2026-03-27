@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Row,
@@ -23,12 +24,16 @@ const ListarPedidoConModal = () => {
   const [pedidosOriginales, setPedidosOriginales] = useState([]);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [imprimirFactura, setImprimirFactura] = useState(false);
 
   const [showPagoModal, setShowPagoModal] = useState(false);
   const [metodoPago, setMetodoPago] = useState("");
   const [valorPago, setValorPago] = useState("");
+  const [valorRecibido, setValorRecibido] = useState("");
+  const [cambio, setCambio] = useState(0);
 
   const totalPaginas = Math.ceil(pedidos.length / pedidosPorPagina);
+  const navigate = useNavigate();
 
   useEffect(() => {
     cargarPedidos();
@@ -143,6 +148,20 @@ const ListarPedidoConModal = () => {
     setShowPagoModal(true);
   };
 
+  const handleEditar = (codigoPedido) => {
+  navigate(`editar-pedido/${codigoPedido}`);
+};
+
+useEffect(() => {
+  if (pedidoSeleccionado && valorRecibido) {
+    const total = pedidoSeleccionado.valorPedido;
+    const recibido = Number(valorRecibido);
+
+    if (!isNaN(recibido)) {
+      setCambio(recibido - total);
+    }
+  }
+}, [valorRecibido, pedidoSeleccionado]);
 
   const handleRegistrarPago = async () => {
     if (!metodoPago || !valorPago) {
@@ -170,6 +189,112 @@ const ListarPedidoConModal = () => {
     }
   };
 
+  const imprimirFacturaEnNuevaPestana = () => {
+  if (!pedidoSeleccionado) return;
+
+  const ventana = window.open("", "_blank");
+
+  const html = `
+    <html>
+      <head>
+        <title>Factura Pedido ${pedidoSeleccionado.codigoPedido}</title>
+        <style>
+          body {
+            font-family: Arial;
+            padding: 20px;
+          }
+          h2, h3 {
+            text-align: center;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid #000;
+            padding: 6px;
+            text-align: center;
+          }
+          .total {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 18px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Inversiones Herrera Chacón S.A.S.</h1>
+        <h2>Factura</h2>
+        <h3>Pedido #${pedidoSeleccionado.codigoPedido}</h3>
+
+        <p>
+          <strong>Cliente:</strong> 
+          ${pedidoSeleccionado.nombreCliente} ${pedidoSeleccionado.apellidoCliente || ""}
+        </p>
+
+        <p>
+          <strong>Fecha:</strong> 
+          ${pedidoSeleccionado.fechaPedido}
+        </p>
+
+        <p>
+          <strong>Hora:</strong> 
+          ${pedidoSeleccionado.horaPedido?.substring(0,5)}
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre</th>
+              <th>Cantidad</th>
+              <th>Precio</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pedidoSeleccionado.detallesP
+              ?.map(
+                (p) => `
+              <tr>
+                <td>${p.codigoProducto}</td>
+                <td>${p.nombreProducto}</td>
+                <td>${p.cantidadProducto}</td>
+                <td>$${p.valorProducto.toLocaleString()}</td>
+                <td>$${p.totalPagoProducto.toLocaleString()}</td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <div class="total">
+          <strong>Total: $${pedidoSeleccionado.valorPedido.toLocaleString()}</strong>
+        </div>
+
+        <p><strong>Pago con:</strong> $${Number(valorRecibido).toLocaleString()}</p>
+        <p><strong>Cambio:</strong> $${cambio.toLocaleString()}</p>
+
+        <p style="text-align:center; margin-top:20px;">
+          ¡Gracias por tu compra!<br/>
+          Vuelve pronto
+        </p>
+
+        <script>
+          window.onload = function() {
+            window.print();
+          }
+        </script>
+
+      </body>
+    </html>
+  `;
+
+  ventana.document.write(html);
+  ventana.document.close();
+};
 
   const pedidosPaginados = pedidos.slice(
     (paginaActual - 1) * pedidosPorPagina,
@@ -268,6 +393,14 @@ const ListarPedidoConModal = () => {
                   >
                     👁 Ver
                   </Button>
+                <Button 
+                    variant="warning"
+                    size="sm"
+                    className="me-2"  onClick={() => {
+                      navigate(`../editar-pedido/${pedido.codigoPedido}`);
+                    }}>
+                  ✏️ Editar
+                </Button>
                   <Button
                     variant="danger"
                     size="sm"
@@ -356,7 +489,7 @@ const ListarPedidoConModal = () => {
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Nombre</th>
-                    <th>Precio Docena</th>
+                    <th>Precio Unitario</th>
                     <th>Total</th>
                   </tr>
                 </thead>
@@ -384,12 +517,12 @@ const ListarPedidoConModal = () => {
         <Modal.Footer>
           {pedidoSeleccionado?.estadoPedido === "Pendiente" && (
             <Button variant="warning" onClick={handleMarcarCompletado}>
-              📦 Marcar como Completado
+               Marcar como Completado
             </Button>
           )}
           {pedidoSeleccionado?.estadoPedido === "Completado" && (
             <Button variant="success" onClick={handleAbrirPago}>
-              💵 Registrar Pago
+               Registrar Pago
             </Button>
           )}
           <Button variant="secondary" onClick={() => setShowModal(false)}>
@@ -398,47 +531,102 @@ const ListarPedidoConModal = () => {
         </Modal.Footer>
       </Modal>
 
-      {/* Modal Método de Pago */}
       <Modal
         show={showPagoModal}
         onHide={() => setShowPagoModal(false)}
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>Registrar Método de Pago</Modal.Title>
+          <Modal.Title>Registrar Pago</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Método de Pago</Form.Label>
-              <Form.Select
-                value={metodoPago}
-                onChange={(e) => setMetodoPago(e.target.value)}
-              >
-                <option value="">Seleccione...</option>
-                <option value="Efectivo">Efectivo</option>
-                <option value="Tarjeta">Tarjeta</option>
-                <option value="Transferencia">Transferencia</option>
-              </Form.Select>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Valor a Pagar</Form.Label>
-              <Form.Control
-                type="number"
-                placeholder="Ingrese el valor"
-                value={valorPago}
-                onChange={(e) => setValorPago(e.target.value)}
-              />
-            </Form.Group>
-          </Form>
+          {pedidoSeleccionado && (
+            <div className="card p-3 shadow-sm">
+
+              <h5 className="text-center mb-3">
+                Pedido #{pedidoSeleccionado.codigoPedido}
+              </h5>
+
+              <div className="mb-2">
+                <label>Total a pagar</label>
+                <input
+                  className="form-control"
+                  value={`$ ${pedidoSeleccionado.valorPedido.toLocaleString()}`}
+                  readOnly
+                />
+              </div>
+
+              <div className="mb-2">
+                <label>¿Con cuánto paga?</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={valorRecibido}
+                  onChange={(e) => {
+                    const valor = e.target.value.replace(/\D/g, "");
+                    setValorRecibido(valor);
+                  }}
+                />
+              </div>
+
+              <div className="mb-2">
+                <label>Cambio</label>
+                <input
+                  className="form-control"
+                  value={`$ ${cambio >= 0 ? cambio.toLocaleString() : 0}`}
+                  readOnly
+                />
+              </div>
+
+              {cambio < 0 && (
+                <p className="text-danger mt-2">
+                  ⚠️ El dinero no alcanza
+                </p>
+              )}
+
+              <div className="form-check form-switch mt-3">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={imprimirFactura}
+                  onChange={(e) => setImprimirFactura(e.target.checked)}
+                />
+                <label className="form-check-label">
+                  Imprimir factura automáticamente
+                </label>
+              </div>
+
+            </div>
+          )}
         </Modal.Body>
+
         <Modal.Footer>
-          <Button variant="success" onClick={handleRegistrarPago}>
-            Guardar Pago
-          </Button>
-          <Button variant="secondary" onClick={() => setShowPagoModal(false)}>
-            Cerrar
-          </Button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setShowPagoModal(false)}
+          >
+            Cancelar
+          </button>
+
+          <button
+          className="btn btn-success"
+          onClick={() => {
+            setShowPagoModal(false);
+
+            if (imprimirFactura) {
+              imprimirFacturaEnNuevaPestana();
+            }
+
+            navigate("/admin/listar-pedido");
+
+            setValorRecibido("");
+            setCambio(0);
+            setImprimirFactura(false);
+          }}
+        >
+          Confirmar Pago
+        </button>
         </Modal.Footer>
       </Modal>
     </Container>

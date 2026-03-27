@@ -6,7 +6,7 @@ import clienteService from '/src/services/apiCliente.js';
 const ListarCliente = () => {
     const [clientes, setClientes] = useState([]);
     const [clientesOriginales, setClientesOriginales] = useState([]);
-    const [idBusqueda, setIdBusqueda] = useState('');
+    const [busqueda, setBusqueda] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [mensajeVacio, setMensajeVacio] = useState('');
@@ -14,8 +14,9 @@ const ListarCliente = () => {
 
     const clientesPorPagina = 10;
     const totalPaginas = Math.max(
-    1,
-    Math.ceil(clientesOriginales.length / clientesPorPagina));
+        1,
+        Math.ceil(clientes.length / clientesPorPagina)
+    );
 
     useEffect(() => {
         cargarClientes();
@@ -36,33 +37,8 @@ const ListarCliente = () => {
         }
     };
 
-    const buscarClientePorId = async () => {
-        if (!idBusqueda) return;
-
-        setLoading(true);
-        try {
-            const cliente = await clienteService.getClientePorId(idBusqueda);
-
-            setClientes(cliente ? [cliente] : []);
-            setMensajeVacio(
-                cliente
-                    ? ''
-                    : `No se encontraron coincidencias con el número de documento: ${idBusqueda}`
-            );
-
-            setPaginaActual(1);
-            setError(null);
-        } catch {
-            setClientes([]);
-            setMensajeVacio(`No se encontraron coincidencias con el número de documento: ${idBusqueda}`);
-            setError(null); // 👈 UX limpia
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleBusqueda = (valor) => {
-        setIdBusqueda(valor);
+        setBusqueda(valor);
 
         if (valor.trim() === '') {
             setClientes(clientesOriginales);
@@ -71,10 +47,12 @@ const ListarCliente = () => {
             return;
         }
 
+        const texto = valor.toLowerCase();
+
         const filtrados = clientesOriginales.filter(cliente =>
-            cliente.documentoCliente
-                .toString()
-                .includes(valor.trim())
+            cliente.nombreCliente.toLowerCase().includes(texto) ||
+            cliente.apellidoCliente.toLowerCase().includes(texto) ||
+            cliente.documentoCliente.toString().includes(texto)
         );
 
         setClientes(filtrados);
@@ -82,21 +60,17 @@ const ListarCliente = () => {
 
         setMensajeVacio(
             filtrados.length === 0
-                ? `No se encontraron coincidencias con el número de documento: ${valor}`
+                ? `No se encontraron clientes con: ${valor}`
                 : ''
         );
     };
-
-
 
     const eliminarCliente = async (documentoCliente) => {
         if (!window.confirm('¿Está seguro de eliminar este cliente?')) return;
 
         try {
             await clienteService.eliminarCliente(documentoCliente);
-
             await cargarClientes();
-
             setPaginaActual(1);
             setMensajeVacio('');
             setError(null);
@@ -133,25 +107,18 @@ const ListarCliente = () => {
                 <Row className="g-2">
                     <Col md={10}>
                         <Form.Control
-                            placeholder="🔍 Buscar por documento"
-                            value={idBusqueda}
+                            placeholder="🔍 Buscar por nombre, apellido o documento"
+                            value={busqueda}
                             onChange={(e) => handleBusqueda(e.target.value)}
                         />
                     </Col>
-                    <Col md={2} className="d-flex gap-2">
-                        <Button
-                            type="button"
-                            onClick={buscarClientePorId}
-                            variant="outline-primary"
-                        >
-                            Buscar
-                        </Button>
 
+                    <Col md={2}>
                         <Button
                             type="button"
                             variant="outline-secondary"
                             onClick={() => {
-                                setIdBusqueda('');
+                                setBusqueda('');
                                 setClientes(clientesOriginales);
                                 setMensajeVacio('');
                                 setPaginaActual(1);
@@ -212,45 +179,45 @@ const ListarCliente = () => {
                 </tbody>
             </Table>
 
-                <Row className="mt-3">
-                    <Col className="d-flex justify-content-center align-items-center gap-2">
-                        <Button
-                            size="sm"
-                            disabled={paginaActual === 1}
-                            onClick={() => cambiarPagina(1)}
-                        >
-                            ⏮
-                        </Button>
+            <Row className="mt-3">
+                <Col className="d-flex justify-content-center align-items-center gap-2">
+                    <Button
+                        size="sm"
+                        disabled={paginaActual === 1}
+                        onClick={() => cambiarPagina(1)}
+                    >
+                        ⏮
+                    </Button>
 
-                        <Button
-                            size="sm"
-                            disabled={paginaActual === 1}
-                            onClick={() => cambiarPagina(paginaActual - 1)}
-                        >
-                            ◀
-                        </Button>
+                    <Button
+                        size="sm"
+                        disabled={paginaActual === 1}
+                        onClick={() => cambiarPagina(paginaActual - 1)}
+                    >
+                        ◀
+                    </Button>
 
-                        <span className="fw-semibold">
-                            Página {paginaActual} de {totalPaginas}
-                        </span>
+                    <span className="fw-semibold">
+                        Página {paginaActual} de {totalPaginas}
+                    </span>
 
-                        <Button
-                            size="sm"
-                            disabled={paginaActual === totalPaginas}
-                            onClick={() => cambiarPagina(paginaActual + 1)}
-                        >
-                            ▶
-                        </Button>
+                    <Button
+                        size="sm"
+                        disabled={paginaActual === totalPaginas}
+                        onClick={() => cambiarPagina(paginaActual + 1)}
+                    >
+                        ▶
+                    </Button>
 
-                        <Button
-                            size="sm"
-                            disabled={paginaActual === totalPaginas}
-                            onClick={() => cambiarPagina(totalPaginas)}
-                        >
-                            ⏭
-                        </Button>
-                    </Col>
-                </Row>
+                    <Button
+                        size="sm"
+                        disabled={paginaActual === totalPaginas}
+                        onClick={() => cambiarPagina(totalPaginas)}
+                    >
+                        ⏭
+                    </Button>
+                </Col>
+            </Row>
         </Container>
     );
 };

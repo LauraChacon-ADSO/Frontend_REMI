@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Login.css";
+import fondo from "../../assets/img/FondoMovilREMI.jpeg";
 
 function Login() {
   const [documento, setDocumento] = useState("");
@@ -46,6 +47,14 @@ function Login() {
   };
 
   return (
+  <div
+    style={{
+      backgroundImage: `url(${fondo})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+      height: "100vh",
+    }}
+  >
     <div className="login-container">
       <div className="login-card">
         <h2 className="login-title">Iniciar sesión</h2>
@@ -70,7 +79,8 @@ function Login() {
         </button>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default Login;

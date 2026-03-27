@@ -254,37 +254,7 @@ export default function Sidebar() {
           </ul>
         )}
       </li>
-        <li className="nav-item">
-          <div
-            className="nav-link text-white d-flex justify-content-between align-items-center"
-            style={{ cursor: "pointer" }}
-            onClick={() => toggleMenu("metodos")}
-          >
-            <span>
-              <FaCreditCard className="me-2" /> Métodos de Pago
-            </span>
-            <FaChevronDown
-              style={{
-                transform: open === "metodos" ? "rotate(180deg)" : "rotate(0)",
-                transition: "0.3s",
-              }}
-            />
-          </div>
-          {open === "metodos" && (
-            <ul className="nav flex-column ms-4 mt-2">
-              <li>
-                <a href="/admin/metodos-agregar" className="nav-link text-white">
-                  Agregar Método
-                </a>
-              </li>
-              <li>
-                <a href="/admin/metodos-lista" className="nav-link text-white">
-                  Métodos
-                </a>
-              </li>
-            </ul>
-          )}
-        </li>
+          
 
         {/* Reportes */}
         <li className="nav-item">

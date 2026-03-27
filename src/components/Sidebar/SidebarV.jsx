@@ -125,11 +125,7 @@ export default function SidebarVendedor() {
         </li>
 
         
-        <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            <FaReceipt className="me-2" /> Recibo
-          </a>
-        </li>
+        
       </ul>
     </div>
   );

@@ -115,12 +115,6 @@ const ListarProductos = () => {
         />
 
         <Column
-          dataField="entradaProducto"
-          caption="Entrada Producto"
-          width={140}
-        />
-
-        <Column
           dataField="marcaProducto"
           caption="Marca"
           width={160}
