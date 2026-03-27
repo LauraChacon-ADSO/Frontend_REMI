@@ -40,7 +40,7 @@ const AgregarUsuario = () => {
     console.log("📦 Payload enviado:", payload);
 
     try {
-      const response = await fetch("https://localhost:7052/api/Auth/register", {
+      const response = await fetch("https://proyecto-remi-webapi2026-c3d2d9h2gecwfbf3.canadacentral-01.azurewebsites.net/api/Auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

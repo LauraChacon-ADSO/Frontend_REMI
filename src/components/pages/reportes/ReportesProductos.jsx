@@ -22,13 +22,9 @@ export default function ReporteProductos() {
     fetchData();
   }, []);
 
-  // Ordenar por ventas (salidaProducto)
+  // Ordenar por ventas 
   const masVendidos = [...productos]
     .sort((a, b) => (b.salidaProducto ?? 0) - (a.salidaProducto ?? 0))
-    .slice(0, 10);
-
-  const menosVendidos = [...productos]
-    .sort((a, b) => (a.salidaProducto ?? 0) - (b.salidaProducto ?? 0))
     .slice(0, 10);
 
   return (
@@ -42,8 +38,6 @@ export default function ReporteProductos() {
                 <thead>
                   <tr>
                     <th>Producto</th>
-                    <th>Ventas</th>
-                    <th>Stock</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -51,41 +45,6 @@ export default function ReporteProductos() {
                     <tr key={index}>
                       <td>{p.nombreProducto}</td>
                       <td>{p.salidaProducto ?? 0}</td>
-                      <td>
-                        {p.stocks && p.stocks.length > 0
-                          ? p.stocks[0].cantidadActual
-                          : "N/A"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col md={6}>
-          <Card>
-            <Card.Header>📉 Productos Menos Vendidos</Card.Header>
-            <Card.Body>
-              <Table striped bordered hover responsive>
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th>Ventas</th>
-                    <th>Stock</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {menosVendidos.map((p, index) => (
-                    <tr key={index}>
-                      <td>{p.nombreProducto}</td>
-                      <td>{p.salidaProducto ?? 0}</td>
-                      <td>
-                        {p.stocks && p.stocks.length > 0
-                          ? p.stocks[0].cantidadActual
-                          : "N/A"}
-                      </td>
                     </tr>
                   ))}
                 </tbody>

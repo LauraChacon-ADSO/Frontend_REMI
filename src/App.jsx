@@ -17,8 +17,7 @@ import EditarUsuario from './components/pages/usuarios/EditarUsuario.jsx';
 import AgregarUsuario from './components/pages/usuarios/AgregarUsuario.jsx';  
 import Login from "./components/pages/Login.jsx";
 import Perfil from "./components/pages/Perfil.jsx";
-import ReportesProductos from './components/pages/reportes/ReportesProductos.jsx';
-import ReportesVentas from './components/pages/reportes/ReportesVentas.jsx';
+//import ReporteProductos from './components/pages/reportes/ReporteProductos.jsx';
 import ListarProductos from "./components/productos/ListarProductos.jsx";
 import ListarCategorias from "./components/categoria/ListarCategoria.jsx";
 import ListarSubCategorias from "./components/subcategoria/ListarSubCategorias.jsx";
@@ -90,8 +89,7 @@ function App() {
           <Route path="usuarios-editar/:documento" element={<EditarUsuario />} />
           <Route path="usuarios-agregar" element={<AgregarUsuario />} />
 
-          <Route path="reportes-productos" element={<ReportesProductos />} />
-          <Route path="reportes-ventas" element={<ReportesVentas />} />
+          
           
 
           
@@ -112,9 +110,22 @@ function App() {
 
           <Route path="listar-pedido" element={<ListarPedido />} />
           <Route path="detalle-pedido/:codigoPedido" element={<ListaDetallePedido />} />
+          <Route path="editar-pedido/:codigoPedido" element={<EditarPedido />} />
 
           <Route path="clientes-lista" element={<ListarCliente />} />
           <Route path="clientes-agregar" element={<AgregarCliente />} />
+          <Route path="clientes-editar/:documentoCliente" element={<EditarCliente />} />
+
+          <Route path="categorias" element={<ListarCategorias />} />
+          <Route
+            path="subcategorias/:categoriaId"
+            element={<ListarSubCategorias />}
+          />
+
+          <Route path="proveedores" element={<ListarProveedores />} />
+          <Route path="productos" element={<ListarProductos />} />
+
+          
 
           
           <Route path="perfil" element={<Perfil />} />

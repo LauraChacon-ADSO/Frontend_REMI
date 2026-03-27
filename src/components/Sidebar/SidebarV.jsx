@@ -118,11 +118,95 @@ export default function SidebarVendedor() {
         </li>
 
         
-        <li className="nav-item">
-          <a href="#" className="nav-link text-white">
-            <FaBox className="me-2" /> Productos
-          </a>
-        </li>
+         {/* PRODUCTOS */}
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-white d-flex justify-content-between align-items-center"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleMenu("productos")}
+                  >
+                    <span>
+                      <FaBox className="me-2" /> Productos
+                    </span>
+                    <FaChevronDown
+                      style={{
+                        transform:
+                          open === "productos" ? "rotate(180deg)" : "rotate(0)",
+                        transition: "0.3s",
+                      }}
+                    />
+                  </div>
+        
+                  {open === "productos" && (
+                    <ul className="nav flex-column ms-4 mt-2">
+                      <li>
+                        <Link to="/admin/productos" className="nav-link text-white">
+                          Productos
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                </li>
+            
+            {/* PROVEEDORES */}
+                    <li className="nav-item">
+                      <div
+                        className="nav-link text-white d-flex justify-content-between align-items-center"
+                        style={{ cursor: "pointer" }}
+                        onClick={() => toggleMenu("proveedores")}
+                      >
+                        <span>
+                          <FaTruck className="me-2" /> Proveedores
+                        </span>
+                        <FaChevronDown
+                          style={{
+                            transform:
+                              open === "proveedores" ? "rotate(180deg)" : "rotate(0)",
+                            transition: "0.3s",
+                          }}
+                        />
+                      </div>
+            
+                      {open === "proveedores" && (
+                        <ul className="nav flex-column ms-4 mt-2">
+                         
+                          <li>
+                             <Link to="/admin/proveedores" className="nav-link text-white">
+                        Ver proveedores
+                    </Link>
+                          </li>
+                        </ul>
+                      )}
+                    </li>
+
+          {/* CATEGORÍAS */}
+                <li className="nav-item">
+                  <div
+                    className="nav-link text-white d-flex justify-content-between align-items-center"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => toggleMenu("categorias")}
+                  >
+                    <span>
+                      <FaFolderOpen className="me-2" /> Categorías
+                    </span>
+                    <FaChevronDown
+                      style={{
+                        transform: open === "categorias" ? "rotate(180deg)" : "rotate(0)",
+                        transition: "0.3s",
+                      }}
+                    />
+                  </div>
+                  {open === "categorias" && (
+                    <ul className="nav flex-column ms-4 mt-2">
+                      <li>
+                        <Link to="/admin/categorias" className="nav-link text-white">
+                          Ver Categorías
+                        </Link>
+                      </li>
+                    </ul>
+                  )}
+                </li>
+
 
         
         

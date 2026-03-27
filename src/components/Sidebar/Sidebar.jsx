@@ -117,14 +117,6 @@ export default function Sidebar() {
                   Productos
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/admin/productos/agregar"
-                  className="nav-link text-white"
-                >
-                  Agregar Producto
-                </Link>
-              </li>
             </ul>
           )}
         </li>
@@ -263,30 +255,8 @@ export default function Sidebar() {
             style={{ cursor: "pointer" }}
             onClick={() => toggleMenu("reportes")}
           >
-            <span>
-              <FaClipboardList className="me-2" /> Reportes
-            </span>
-            <FaChevronDown
-              style={{
-                transform: open === "reportes" ? "rotate(180deg)" : "rotate(0)",
-                transition: "0.3s",
-              }}
-            />
           </div>
-          {open === "reportes" && (
-            <ul className="nav flex-column ms-4 mt-2">
-              <li>
-                <a href="/admin/reportes-productos" className="nav-link text-white">
-                  Reporte de Productos
-                </a>
-              </li>
-              <li>
-                <a href="/admin/reportes-ventas" className="nav-link text-white">
-                  Reporte de Ventas
-                </a>
-              </li>
-            </ul>
-          )}
+          
         </li>
       </ul>     
     </div>
