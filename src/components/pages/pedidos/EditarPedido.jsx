@@ -200,10 +200,19 @@ function EditarPedido() {
         )}
 
         {cliente && (
-          <div className="card mt-3 p-3">
-            <h5>Datos del Cliente</h5>
-            <p><strong>Documento:</strong> {cliente.documentoCliente}</p>
-            <p><strong>Nombre:</strong> {cliente.nombreCliente}</p>
+          <div className="card mt-3 p-3 shadow-sm border-0">
+            <h5 className="mb-3">Datos del Cliente</h5>
+
+            <div className="row">
+              <div className="col-md-6">
+                <p>
+                  <strong>Documento:</strong> {cliente.documentoCliente}
+                </p>
+                <p>
+                  <strong>Nombre:</strong> {cliente.nombreCliente} {cliente.apellidoCliente}
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </div>
